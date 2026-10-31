@@ -3,13 +3,10 @@
 
 #include "Core/ApplicationCore.hpp"
 #include "Interfaces/ITool.hpp"
-#include "Interfaces/IUnknown.hpp"
 
 #include <memory>
 #include <string>
 #include <unordered_map>
-// forward-declaration
-class Event;
 
 // for now ToolManager doesn't own a tool
 // so it doesn't track its lifetime
@@ -31,7 +28,7 @@ public: // constructors && destructors
     ToolManager& operator=(ToolManager&&)      = delete;
 
 public: // getters && setters
-    bool setActiveTool(const IID& id)
+    bool setActiveTool(const IID& iid)
     {
         void* pv = nullptr;
         if (core.getInterface(id, &pv) != S_OK || !pv)
@@ -52,7 +49,7 @@ public: // getters && setters
         return true;
     }
 
-    ITool* getActiveTool() const
+    ITool* activeTool() const
     {
         return active_tool_;
     }

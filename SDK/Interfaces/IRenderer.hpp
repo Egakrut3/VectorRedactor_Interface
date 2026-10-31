@@ -1,12 +1,10 @@
 #ifndef I_RENDERER_HPP
 #define I_RENDERER_HPP
 
-#include "Interfaces/IUnknown.hpp"
+#include "Utils/BoxF.hpp"
+#include "Utils/Vec2F.hpp"
 
 #include <cstdint>
-
-struct BoxF;
-struct Vec2f;
 
 struct Color
 {
@@ -18,7 +16,7 @@ struct Color
 
 // TODO: add basic colors (like Color::RED, Color::GREEN, etc)
 
-class IRenderer : public IUnknown
+class IRenderer
 {
 public:
     using ResourceID = uint64_t;
@@ -35,9 +33,9 @@ public:
     virtual void renderCircle(const Color& color, const BoxF& box)                             = 0;
     virtual void renderEllipse(const Color& color, const BoxF& box)                            = 0;
     virtual void renderEllipseLines(const Color& color, const BoxF& box)                       = 0;
-    virtual void renderLine(const Vec2f& origin, const Vec2f& end, const Color& color)         = 0;
-    virtual void renderVector(const Vec2f& origin, const Vec2f& vector, const Color& color)    = 0;
-    virtual void renderPixel(const Vec2f& pos, const Color& color)                             = 0;
+    virtual void renderLine(const Vec2F& origin, const Vec2F& end, const Color& color)         = 0;
+    virtual void renderVector(const Vec2F& origin, const Vec2F& vector, const Color& color)    = 0;
+    virtual void renderPixel(const Vec2F& pos, const Color& color)                             = 0;
 
     virtual void update()                  = 0;
     virtual void clear()                   = 0;

@@ -1,10 +1,10 @@
 #ifndef APPLICATION_CORE_HPP
 #define APPLICATION_CORE_HPP
 
+#include "Interfaces/IID.hpp"
 #include "Interfaces/IInputPump.hpp"
-#include "Interfaces/IPlugin.hpp"
 #include "Interfaces/IRenderer.hpp"
-#include "Interfaces/IUnknown.hpp"
+#include "Interfaces/Package.hpp"
 #include "Utils/AObject.hpp"
 
 #include <cassert>
@@ -15,44 +15,48 @@
 #include <unordered_map>
 #include <vector>
 
-constexpr IID IID_UNKNOWN    = 0x00'01;
-constexpr IID IID_PLUGIN     = 0x00'02;
-constexpr IID IID_RENDERER   = 0x00'03;
-constexpr IID IID_INPUT_PUMP = 0x00'04;
-constexpr IID IID_LOGGER     = 0x00'05;
-
-// NOTE: Forward declaration
-struct Event;
-
 class ApplicationCore
 {
 private:
-    IRenderer*                        renderer_   = nullptr;
-    IInputPump*                       input_pump_ = nullptr;
-    std::unordered_map<IID, IPlugin*> registry_;
-    std::unique_ptr<AObject>          root_;
-    std::vector<void*>                loaded_handles_;
-    bool                              is_running_ = false;
-
-public:
     ApplicationCore();
     ~ApplicationCore();
 
+    std::unordered_map<IID, void*> registry_;
+    std::unique_ptr<AObject>       root_;
+    std::vector<void*>             package_handles_;
+    bool                           is_running_ = false;
+
+public:
     ApplicationCore(const ApplicationCore&)            = delete;
     ApplicationCore(ApplicationCore&&)                 = delete;
     ApplicationCore& operator=(const ApplicationCore&) = delete;
     ApplicationCore& operator=(ApplicationCore&&)      = delete;
 
-    AObject*    root() const;
-    IRenderer*  renderer() const;
-    IInputPump* inputPump() const;
+    enum class Error;
 
-    int  run();
-    void stop();
+    static ApplicationCore& instance();
+    AObject*                root() const;
+    Error                   queryInterface(IID iid, void** interface) const;
 
-    HRESULT                 registerPluginInterface(IID iid, IPlugin* service);
-    std::optional<IPlugin*> getPluginInterface(IID iid);
-    bool                    loadPlugin(const std::string& path);
+    Error run();
+    void  stop();
+
+    Error registerInterface(IID iid, void* interface);
+    Error loadPackage(const std::string& path);
+};
+
+enum class ApplicationCore::Error
+{
+    SUCCESS,
+    INVALID_ARGS,
+
+    INTERFACE_NOT_FOUND,
+    APPLICATION_ALREADY_RUNNING,
+    NOT_LOADED_RENDERER,
+    NOT_LOADED_INPUT_PUMP,
+    INTERFACE_ALREADY_EXISTS,
+    PACKAGE_NOT_FOUND,
+    PACKAGE_INVALID_BINARY,
 };
 
 /* ======================== Implementation ======================== */
@@ -64,23 +68,23 @@ ApplicationCore::ApplicationCore()
 
 ApplicationCore::~ApplicationCore()
 {
-    for (auto& [iid, service] : registry_)
-    {
-        if (service != nullptr)
-        {
-            service->release();
-        }
-    }
     registry_.clear();
 
-    for (auto it = loaded_handles_.rbegin(); it != loaded_handles_.rend(); ++it)
+    for (auto handle = package_handles_.rbegin(); handle != package_handles_.rend(); ++handle)
     {
-        if (*it != nullptr)
+        if (*handle != nullptr)
         {
-            dlclose(*it);
+            dlclose(*handle);
         }
     }
-    loaded_handles_.clear();
+
+    package_handles_.clear();
+}
+
+ApplicationCore& ApplicationCore::instance()
+{
+    static ApplicationCore instance;
+    return instance;
 }
 
 AObject* ApplicationCore::root() const
@@ -88,16 +92,58 @@ AObject* ApplicationCore::root() const
     return root_.get();
 }
 
-IRenderer* ApplicationCore::renderer() const
+ApplicationCore::Error ApplicationCore::queryInterface(IID iid, void** interface) const
 {
-    assert(renderer_);
-    return renderer_;
+    if (interface == nullptr)
+    {
+        return Error::INVALID_ARGS;
+    }
+
+    auto found = registry_.find(iid);
+    if (registry_.contains(iid))
+    {
+        *interface = found->second;
+    }
+
+    return Error::INTERFACE_NOT_FOUND;
 }
 
-IInputPump* ApplicationCore::inputPump() const
+ApplicationCore::Error ApplicationCore::run()
 {
-    assert(input_pump_);
-    return input_pump_;
+    /* already running => return */
+    if (is_running_)
+    {
+        return Error::APPLICATION_ALREADY_RUNNING;
+    }
+
+    IRenderer* renderer = nullptr;
+    if (queryInterface(IID_RENDERER, reinterpret_cast<void**>(&renderer)) != Error::SUCCESS)
+    {
+        return Error::NOT_LOADED_RENDERER;
+    }
+    assert(renderer);
+
+    IInputPump* input_pump = nullptr;
+    if (queryInterface(IID_INPUT_PUMP, reinterpret_cast<void**>(&input_pump)) != Error::SUCCESS)
+    {
+        return Error::NOT_LOADED_INPUT_PUMP;
+    }
+    assert(input_pump);
+
+    is_running_ = true;
+    while (is_running_)
+    {
+        auto polled = input_pump->pollEvent();
+        if (polled.has_value())
+        {
+            root_->processEvent(polled.value());
+        }
+
+        root_->render();
+        renderer->update();
+    }
+
+    return Error::SUCCESS;
 }
 
 void ApplicationCore::stop()
@@ -105,106 +151,42 @@ void ApplicationCore::stop()
     is_running_ = false;
 }
 
-HRESULT ApplicationCore::registerPluginInterface(IID iid, IPlugin* service)
+ApplicationCore::Error ApplicationCore::registerInterface(IID iid, void* interface)
 {
-    if (service == nullptr)
+    if (interface == nullptr)
     {
-        return E_INVALIDARG;
+        return Error::INVALID_ARGS;
     }
-    if (registry_.contains(iid))
-    {
-        return E_FAIL;
-    }
-    service->addRef();
-    registry_[iid] = service;
-    return S_OK;
-}
-
-std::optional<IPlugin*> ApplicationCore::getPluginInterface(IID iid)
-{
-    IPlugin* plugin = nullptr;
-    auto     found  = registry_.find(iid);
 
     if (registry_.contains(iid))
     {
-        found->second->queryInterface(iid, reinterpret_cast<void**>(&plugin));
-        return plugin;
+        return Error::INTERFACE_ALREADY_EXISTS;
     }
 
-    return std::nullopt;
+    registry_[iid] = interface;
+    return Error::SUCCESS;
 }
 
-bool ApplicationCore::loadPlugin(const std::string& path)
+ApplicationCore::Error ApplicationCore::loadPackage(const std::string& path)
 {
-    using GetPluginFunc = IUnknown* (*)();
-
     void* handle = dlopen(path.c_str(), RTLD_NOW);
     if (handle == nullptr)
     {
-        return false;
+        return Error::PACKAGE_NOT_FOUND;
     }
 
-    auto get_plugin_instance = (GetPluginFunc)dlsym(handle, "getInterface");
-
-    if (get_plugin_instance == nullptr)
+    InitPackageFunc* init_package = reinterpret_cast<InitPackageFunc*>(dlsym(handle, "initPackage"));
+    if (init_package == nullptr)
     {
         dlclose(handle);
-        return false;
+        return Error::PACKAGE_INVALID_BINARY;
     }
 
-    IUnknown* raw_plugin = get_plugin_instance();
-    if (raw_plugin == nullptr)
-    {
-        dlclose(handle);
-        return false;
-    }
+    // TODO: maybe add return code for initPackage
+    init_package(this);
+    package_handles_.push_back(handle);
 
-    void* pv_plugin = nullptr;
-    if (raw_plugin->queryInterface(IID_PLUGIN, &pv_plugin) == S_OK)
-    {
-        auto* plugin = static_cast<IPlugin*>(pv_plugin);
-        if (plugin->init(this) != S_OK)
-        {
-            plugin->release();
-            raw_plugin->release();
-            dlclose(handle);
-            return false;
-        }
-
-        registerPluginInterface(IID_PLUGIN, plugin);
-        plugin->release();
-    }
-    else
-    {
-        raw_plugin->release();
-        dlclose(handle);
-        return false;
-    }
-
-    loaded_handles_.push_back(handle);
-    raw_plugin->release();
-    return true;
-}
-
-int ApplicationCore::run()
-{
-    /* already running => return */
-    if (is_running_)
-    {
-        return 1;
-    }
-
-    is_running_ = true;
-    while (is_running_)
-    {
-        auto event = input_pump_->pollEvent();
-        if (event.has_value()) root_->processEvent(event);
-
-        root_->render();
-        renderer_->update();
-    }
-
-    return 0;
+    return Error::SUCCESS;
 }
 
 #endif
