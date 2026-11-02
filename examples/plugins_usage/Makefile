@@ -1,8 +1,13 @@
 all:
 	@echo [Building MainPlugin.so]
-	clang++ -std=c++23 -g -ldl -Wall -Wextra -fpic -shared -Iinclude -I../../SDK -o MainPlugin.so src/MainPlugin.cpp
+	clang++ -std=c++23 -fpic -shared -Iinclude -I../../SDK -ldl -g -Wall -Wextra -o MainPlugin.so src/MainPlugin.cpp
 	@echo [Building GUIEngine.so]
-	clang++ -std=c++23 -g -ldl -lSDL3 -Wall -Wextra -fpic -shared -Iinclude -I../../SDK -o GUIEngine.so src/GUIEngine.cpp
+	clang++ -std=c++23 -fpic -shared -Iinclude -I../../SDK -g -ldl -lSDL3 -lSDL3_gfx -Wall -Wextra -o GUIEngine.so src/GUIEngine.cpp
 	@echo [Building main]
-	clang++ -std=c++23 -g -ldl -Wall -Wextra -Iinclude -I../../SDK -o main src/Main.cpp
+	clang++ -std=c++23 -rdynamic -Iinclude -I../../SDK -g -ldl -Wall -Wextra -o main src/Main.cpp ../../SDK/Core/ApplicationCore.cpp
+
+clean:
+	rm -rf *.so main
+
+.PHONY: all clean
 

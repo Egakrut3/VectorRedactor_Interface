@@ -8,9 +8,6 @@ constexpr static const IID IID_MAIN_PLUGIN = 100;
 
 extern "C" InitPackageFunc INIT_PACKAGE_FUNC_NAME;
 
-/* global pointer to core */
-ApplicationCore* g_application_core = nullptr;
-
 class IMainPlugin
 {
 private:

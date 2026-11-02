@@ -33,21 +33,54 @@
         ApplicationCore::log(ApplicationCore::LogLevel::ERROR, "FIXME: %s is not implemented yet", __func__); \
     } while (0)
 
-extern "C" bool INIT_PACKAGE_FUNC_NAME(ApplicationCore* core)
+extern "C" bool INIT_PACKAGE_FUNC_NAME()
 {
-    assert(core);
-
-    core->registerInterface(IID_RENDERER, reinterpret_cast<void*>(static_cast<IRenderer*>(&GUIEngine::instance())));
-    core->registerInterface(IID_INPUT_PUMP, reinterpret_cast<void*>(static_cast<IInputPump*>(&GUIEngine::instance())));
+	ApplicationCore::instance().registerInterface(IID_RENDERER,
+			reinterpret_cast<void*>(static_cast<IRenderer*>(&GUIEngine::instance())));
+    ApplicationCore::instance().registerInterface(IID_INPUT_PUMP,
+		    reinterpret_cast<void*>(static_cast<IInputPump*>(&GUIEngine::instance())));
 
     return true;
 }
 
-GUIEngine& GUIEngine::instance()
+void GUIEngine::openWindow(const Vec2F& size)
 {
-    static GUIEngine instance;
-    return instance;
+    window_ = SDL_CreateWindow(nullptr, static_cast<int32_t>(size.x()), static_cast<int32_t>(size.y()), 0);
+    if (window_ == nullptr)
+    {
+        LOG_SDL_ERR();
+        return;
+    }
+
+    renderer_ = SDL_CreateRenderer(window_, nullptr);
+    if (renderer_ == nullptr)
+    {
+        LOG_SDL_ERR();
+        return;
+    }
 }
+
+void GUIEngine::switchRenderColor(const Color& color)
+{
+    assert(renderer_);
+
+    if (!SDL_SetRenderDrawColor(renderer_, color.r, color.g, color.b, color.a))
+    {
+        LOG_SDL_ERR();
+        return;
+    }
+}
+
+void GUIEngine::closeWindow()
+{
+    SDL_DestroyRenderer(renderer_);
+    SDL_DestroyWindow(window_);
+
+    renderer_ = nullptr;
+    window_   = nullptr;
+}
+
+/* ------------------ public methods ------------------ */
 
 GUIEngine::GUIEngine()
 {
@@ -70,41 +103,10 @@ GUIEngine::~GUIEngine()
     ApplicationCore::log(ApplicationCore::LogLevel::OK, "Graphics deinitialized successfully");
 }
 
-void GUIEngine::switchRenderColor(const Color& color)
+GUIEngine& GUIEngine::instance()
 {
-    assert(renderer_);
-
-    if (!SDL_SetRenderDrawColor(renderer_, color.r, color.g, color.b, color.a))
-    {
-        LOG_SDL_ERR();
-        return;
-    }
-}
-
-void GUIEngine::openWindow(const Vec2F& size)
-{
-    window_ = SDL_CreateWindow(nullptr, static_cast<int32_t>(size.x()), static_cast<int32_t>(size.y()), 0);
-    if (window_ == nullptr)
-    {
-        LOG_SDL_ERR();
-        return;
-    }
-
-    renderer_ = SDL_CreateRenderer(window_, nullptr);
-    if (renderer_ == nullptr)
-    {
-        LOG_SDL_ERR();
-        return;
-    }
-}
-
-void GUIEngine::closeWindow()
-{
-    SDL_DestroyRenderer(renderer_);
-    SDL_DestroyWindow(window_);
-
-    renderer_ = nullptr;
-    window_   = nullptr;
+    static GUIEngine instance;
+    return instance;
 }
 
 void GUIEngine::renderRect(const Color& color, const BoxF& box, float angle)
@@ -229,7 +231,7 @@ void GUIEngine::renderEllipseLines([[maybe_unused]] const Color& color, [[maybe_
     LOG_NOT_IMPLEMENTED();
 }
 
-void GUIEngine::renderLine([[maybe_unused]] const Vec2F& origin, [[maybe_unused]] const Vec2F& end, const Color& color)
+void GUIEngine::renderLine([[maybe_unused]] const Vec2F& origin, [[maybe_unused]] const Vec2F& end, [[maybe_unused]] const Color& color)
 {
     LOG_NOT_IMPLEMENTED();
 }

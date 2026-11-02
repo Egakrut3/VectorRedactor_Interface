@@ -8,16 +8,13 @@
 #include <memory>
 #include <variant>
 
-extern "C" bool INIT_PACKAGE_FUNC_NAME(ApplicationCore* core)
+extern "C" bool INIT_PACKAGE_FUNC_NAME()
 {
-    assert(core);
-
-    core->registerInterface(IID_MAIN_PLUGIN, reinterpret_cast<void*>(&IMainPlugin::instance()));
-
-    g_application_core = core;
+	ApplicationCore::instance().registerInterface(IID_MAIN_PLUGIN,
+			reinterpret_cast<void*>(&IMainPlugin::instance()));
 
     auto main_window = std::make_unique<MainWindow>();
-    core->root()->addChild(std::move(main_window));
+    ApplicationCore::instance().root()->addChild(std::move(main_window));
 
     return true;
 }
@@ -25,7 +22,7 @@ extern "C" bool INIT_PACKAGE_FUNC_NAME(ApplicationCore* core)
 void MainWindow::render()
 {
     IRenderer* renderer = nullptr;
-    if (g_application_core->queryInterface(IID_RENDERER, reinterpret_cast<void**>(&renderer)) !=
+    if (ApplicationCore::instance().queryInterface(IID_RENDERER, reinterpret_cast<void**>(&renderer)) !=
         ApplicationCore::Error::SUCCESS)
     {
         return;
@@ -38,7 +35,7 @@ bool MainWindow::processEvent(const Event& event)
 {
     if (std::holds_alternative<EventQuit>(event))
     {
-        g_application_core->stop();
+	    ApplicationCore::instance().stop();
         return true;
     }
 

@@ -42,7 +42,7 @@ public:
     {
         // ...
     };
-    // Maybe string comaring?
+    // Maybe string comparing?
     // "C-A", "C-B" instead enum
     //
     EventKeyboard()  = default;

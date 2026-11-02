@@ -3,7 +3,6 @@
 
 #include "Interfaces/IID.hpp"
 #include "Utils/Event.hpp"
-
 #include <optional>
 
 constexpr static const IID IID_INPUT_PUMP = 1;

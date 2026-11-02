@@ -158,7 +158,7 @@ Vec2F& Vec2F::operator/=(float scalar)
 
 bool Vec2F::operator==(const Vec2F& vec) const
 {
-    return len2() < PERSISION * PERSISION;
+    return (*this - vec).len2() < PERSISION * PERSISION;
 }
 
 bool Vec2F::operator!=(const Vec2F& vec) const
