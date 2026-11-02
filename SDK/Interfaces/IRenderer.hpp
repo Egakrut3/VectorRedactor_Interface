@@ -1,10 +1,12 @@
 #ifndef I_RENDERER_HPP
 #define I_RENDERER_HPP
 
+#include "Interfaces/IID.hpp"
 #include "Utils/BoxF.hpp"
 #include "Utils/Vec2F.hpp"
-
 #include <cstdint>
+
+constexpr static const IID IID_RENDERER = 0;
 
 struct Color
 {
@@ -27,9 +29,9 @@ public:
     virtual ResourceID loadTexture(const char* path)  = 0;
     virtual FontID     loadFont(const char* filename) = 0;
 
-    virtual void renderRect(const Color& color, const BoxF& box, const float& angle)           = 0;
-    virtual void renderRectLines(const Color& color, const BoxF& box, const float& angle)      = 0;
-    virtual void renderTexture(const ResourceID& texture, const BoxF& box, const float& angle) = 0;
+    virtual void renderRect(const Color& color, const BoxF& box, float angle)           = 0;
+    virtual void renderRectLines(const Color& color, const BoxF& box, float angle)      = 0;
+    virtual void renderTexture(const ResourceID& texture, const BoxF& box, float angle) = 0;
     virtual void renderCircle(const Color& color, const BoxF& box)                             = 0;
     virtual void renderEllipse(const Color& color, const BoxF& box)                            = 0;
     virtual void renderEllipseLines(const Color& color, const BoxF& box)                       = 0;

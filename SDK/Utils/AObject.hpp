@@ -4,6 +4,7 @@
 #include "Utils/BoxF.hpp"
 #include "Utils/Event.hpp"
 
+#include <iostream>
 #include <list>
 #include <memory>
 
@@ -15,6 +16,7 @@ private:
     AObject*                            parent_ = nullptr;
 
 public:
+    AObject() = default;
     virtual ~AObject() = default;
 
     AObject* parent() const;
@@ -60,9 +62,9 @@ void AObject::addChild(std::unique_ptr<AObject> child)
 
 bool AObject::processEvent(const Event& event)
 {
-    for (auto& child : children_)
+    for (auto child = children_.rbegin(); child != children_.rend(); child++)
     {
-        if (child->processEvent(event))
+        if ((*child)->processEvent(event))
         {
             return true;
         }
@@ -73,9 +75,9 @@ bool AObject::processEvent(const Event& event)
 
 void AObject::render()
 {
-    for (auto& child : children_)
+    for (auto child = children_.begin(); child != children_.end(); child++)
     {
-        child->render();
+        (*child)->render();
     }
 }
 

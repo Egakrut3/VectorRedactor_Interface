@@ -49,7 +49,14 @@ public:
     ~EventKeyboard() = default;
 };
 
-using Event = std::variant<EventMouse, EventKeyboard /*, ... */>;
+class EventQuit
+{
+	public:
+		EventQuit() = default;
+		~EventQuit() = default;
+};
+
+using Event = std::variant<EventMouse, EventKeyboard, EventQuit/*, ... */>;
 
 /* ======================== Implementation ======================== */
 

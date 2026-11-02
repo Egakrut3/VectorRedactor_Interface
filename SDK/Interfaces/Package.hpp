@@ -2,8 +2,15 @@
 #define PACKAGE_HPP
 
 class ApplicationCore;
-using InitPackageFunc = void(ApplicationCore*);
 
-extern "C" InitPackageFunc initPackage;
+/* Returns:
+ * true		package initialized successfully
+ * false	errors occured
+ */
+using InitPackageFunc = bool(ApplicationCore*);
+
+#define INIT_PACKAGE_FUNC_NAME		initPackage
+#define INIT_PACKAGE_FUNC_NAME_STR 	("initPackage")
 
 #endif
+

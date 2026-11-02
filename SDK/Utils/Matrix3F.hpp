@@ -1,7 +1,7 @@
 #ifndef MATRIX_3F_HPP
 #define MATRIX_3F_HPP
 
-#include "Vec2F.hpp"
+#include "Utils/Vec2F.hpp"
 
 #include <array>
 #include <cmath>
