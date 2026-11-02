@@ -9,8 +9,7 @@ class ApplicationCore;
  */
 using InitPackageFunc = bool(ApplicationCore*);
 
-#define INIT_PACKAGE_FUNC_NAME		initPackage
-#define INIT_PACKAGE_FUNC_NAME_STR 	("initPackage")
+#define INIT_PACKAGE_FUNC_NAME     initPackage
+#define INIT_PACKAGE_FUNC_NAME_STR ("initPackage")
 
 #endif
-

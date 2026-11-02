@@ -51,12 +51,12 @@ public:
 
 class EventQuit
 {
-	public:
-		EventQuit() = default;
-		~EventQuit() = default;
+public:
+    EventQuit()  = default;
+    ~EventQuit() = default;
 };
 
-using Event = std::variant<EventMouse, EventKeyboard, EventQuit/*, ... */>;
+using Event = std::variant<EventMouse, EventKeyboard, EventQuit /*, ... */>;
 
 /* ======================== Implementation ======================== */
 

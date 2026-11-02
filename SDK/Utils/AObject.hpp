@@ -16,7 +16,7 @@ private:
     AObject*                            parent_ = nullptr;
 
 public:
-    AObject() = default;
+    AObject()          = default;
     virtual ~AObject() = default;
 
     AObject* parent() const;
