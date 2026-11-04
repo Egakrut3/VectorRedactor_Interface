@@ -31,11 +31,11 @@ public:
     AObject*       find(ObjectID id);
     const AObject* find(ObjectID id) const;
 
-
     virtual bool processEvent(const Event& event);
     virtual void render();
 
-    virtual Vec2F toGlobal(const Vec2F& pos) const = 0;
+    virtual Vec2F mapLocalToGLobal(const Vec2F& pos) const = 0;
+    virtual Vec2F mapGlobalToLocal(const Vec2F& pos) const = 0;
 
     AObject(const AObject&)            = delete;
     AObject(AObject&&)                 = delete;
@@ -56,8 +56,8 @@ protected:
 
 ObjectID AObject::generateID()
 {
-    static thread_local std::mt19937_64                         generator(std::random_device{}());
-    static thread_local std::uniform_int_distribution<ObjectID> distribution;
+    static std::mt19937_64                         generator(std::random_device{}());
+    static std::uniform_int_distribution<ObjectID> distribution;
 
     return distribution(generator);
 }
