@@ -30,8 +30,8 @@ public:
     AObject*       find(ObjectID id);
     const AObject* find(ObjectID id) const;
 
-    virtual bool processEvent(const Event& event);
-    virtual void render();
+    virtual bool processEvent(const Event& event) = 0;
+    virtual void render()                         = 0;
 
     virtual Vec2F mapLocalToGlobal(const Vec2F& pos) const = 0;
     virtual Vec2F mapGlobalToLocal(const Vec2F& pos) const = 0;
