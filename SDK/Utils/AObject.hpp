@@ -116,16 +116,16 @@ AObject* AObject::find(ObjectID id)
     return nullptr;
 }
 
-const AObject* AObject::find(ObjectID id) const
+const AObject* AObject::find(ObjectID id_) const
 {
-    if (id() == id)
+    if (id() == id_)
     {
         return this;
     }
 
     for (const auto& child : children_)
     {
-        if (const AObject* result = child->find(id))
+        if (const AObject* result = child->find(id_))
         {
             return result;
         }
