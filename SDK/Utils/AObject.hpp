@@ -3,7 +3,7 @@
 
 #include "Utils/BoxF.hpp"
 #include "Utils/Event.hpp"
-#include "Vec2F.hpp"
+#include "Utils/Vec2F.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -17,7 +17,6 @@ class AObject
 {
 
 public:
-    AObject();
     virtual ~AObject() = default;
 
     ObjectID ID() const;
@@ -41,6 +40,9 @@ public:
     AObject(AObject&&)                 = delete;
     AObject& operator=(const AObject&) = delete;
     AObject& operator=(AObject&&)      = delete;
+
+protected:
+    AObject();
 
 private:
     static ObjectID generateID();
@@ -94,27 +96,6 @@ void AObject::addChild(std::unique_ptr<AObject> child)
 {
     child->setParent(this);
     children_.push_back(std::move(child));
-}
-
-bool AObject::processEvent(const Event& event)
-{
-    for (auto child = children_.rbegin(); child != children_.rend(); child++)
-    {
-        if ((*child)->processEvent(event))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void AObject::render()
-{
-    for (auto child = children_.begin(); child != children_.end(); child++)
-    {
-        (*child)->render();
-    }
 }
 
 AObject* AObject::find(ObjectID id)
