@@ -3,6 +3,7 @@
 
 #include "Utils/BoxF.hpp"
 #include "Utils/Event.hpp"
+#include "Vec2F.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -30,6 +31,8 @@ public:
 
     virtual bool processEvent(const Event& event);
     virtual void render();
+
+    virtual Vec2F toGlobal(const Vec2F& pos) const = 0;
 
     AObject(const AObject&)            = delete;
     AObject(AObject&&)                 = delete;
