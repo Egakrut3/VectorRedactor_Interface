@@ -4,21 +4,21 @@
 #include "Utils/BoxF.hpp"
 #include "Utils/Event.hpp"
 
+#include <cstdint>
 #include <iostream>
 #include <list>
 #include <memory>
 
 class AObject
 {
-private:
-    BoxF                                box_;
-    std::list<std::unique_ptr<AObject>> children_;
-    AObject*                            parent_ = nullptr;
 
 public:
-    AObject()          = default;
+    using ID = uint64_t;
+
+    AObject();
     virtual ~AObject() = default;
 
+    ID       getID() const;
     AObject* parent() const;
     void     setParent(AObject* new_parent);
 
@@ -26,13 +26,31 @@ public:
     std::list<std::unique_ptr<AObject>>&       children();
     void                                       addChild(std::unique_ptr<AObject> child);
 
-    /* default impl = send to children */
+    AObject* find(ID id) const;
+
     virtual bool processEvent(const Event& event);
-    /* default impl = render children */
     virtual void render();
+
+    AObject(const AObject&)            = delete;
+    AObject(AObject&&)                 = delete;
+    AObject& operator=(const AObject&) = delete;
+    AObject& operator=(AObject&&)      = delete;
+
+private:
+    ID id_;
+
+protected:
+    std::list<std::unique_ptr<AObject>> children_;
+    AObject*                            parent_ = nullptr;
 };
 
 /* ====================== Implementation ====================== */
+
+AObject::AObject()
+{
+    static ID cur_id = 0;
+    id_              = cur_id++;
+}
 
 void AObject::setParent(AObject* new_parent)
 {
@@ -80,5 +98,9 @@ void AObject::render()
         (*child)->render();
     }
 }
+
+AObject AObject::find(ID id) const
+{
+    if (getID()) }
 
 #endif
