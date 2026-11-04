@@ -19,7 +19,7 @@ class AObject
 public:
     virtual ~AObject() = default;
 
-    ObjectID ID() const;
+    ObjectID id() const;
     AObject* parent() const;
     void     setParent(AObject* new_parent);
 
@@ -67,7 +67,7 @@ AObject::AObject()
     id_ = generateID();
 }
 
-ObjectID AObject::ID() const
+ObjectID AObject::id() const
 {
     return id_;
 }
@@ -100,7 +100,7 @@ void AObject::addChild(std::unique_ptr<AObject> child)
 
 AObject* AObject::find(ObjectID id)
 {
-    if (ID() == id)
+    if (id() == id)
     {
         return this;
     }
@@ -118,7 +118,7 @@ AObject* AObject::find(ObjectID id)
 
 const AObject* AObject::find(ObjectID id) const
 {
-    if (ID() == id)
+    if (id() == id)
     {
         return this;
     }
