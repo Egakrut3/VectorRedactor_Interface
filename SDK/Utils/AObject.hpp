@@ -34,7 +34,7 @@ public:
     virtual bool processEvent(const Event& event);
     virtual void render();
 
-    virtual Vec2F mapLocalToGLobal(const Vec2F& pos) const = 0;
+    virtual Vec2F mapLocalToGlobal(const Vec2F& pos) const = 0;
     virtual Vec2F mapGlobalToLocal(const Vec2F& pos) const = 0;
 
     AObject(const AObject&)            = delete;
@@ -45,9 +45,7 @@ public:
 private:
     static ObjectID generateID();
 
-    ObjectID id_;
-
-protected:
+    ObjectID                            id_;
     std::list<std::unique_ptr<AObject>> children_;
     AObject*                            parent_ = nullptr;
 };
