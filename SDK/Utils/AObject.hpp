@@ -9,17 +9,18 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <random>
+
+using ObjectID = uint64_t;
 
 class AObject
 {
 
 public:
-    using ID = uint64_t;
-
     AObject();
     virtual ~AObject() = default;
 
-    ID       getID() const;
+    ObjectID ID() const;
     AObject* parent() const;
     void     setParent(AObject* new_parent);
 
@@ -27,7 +28,9 @@ public:
     std::list<std::unique_ptr<AObject>>&       children();
     void                                       addChild(std::unique_ptr<AObject> child);
 
-    AObject* find(ID id) const;
+    AObject*       find(ObjectID id);
+    const AObject* find(ObjectID id) const;
+
 
     virtual bool processEvent(const Event& event);
     virtual void render();
@@ -40,7 +43,9 @@ public:
     AObject& operator=(AObject&&)      = delete;
 
 private:
-    ID id_;
+    static ObjectID generateID();
+
+    ObjectID id_;
 
 protected:
     std::list<std::unique_ptr<AObject>> children_;
@@ -49,10 +54,22 @@ protected:
 
 /* ====================== Implementation ====================== */
 
+ObjectID AObject::generateID()
+{
+    static thread_local std::mt19937_64                         generator(std::random_device{}());
+    static thread_local std::uniform_int_distribution<ObjectID> distribution;
+
+    return distribution(generator);
+}
+
 AObject::AObject()
 {
-    static ID cur_id = 0;
-    id_              = cur_id++;
+    id_ = generateID();
+}
+
+ObjectID AObject::ID() const
+{
+    return id_;
 }
 
 void AObject::setParent(AObject* new_parent)
@@ -102,8 +119,40 @@ void AObject::render()
     }
 }
 
-AObject AObject::find(ID id) const
+AObject* AObject::find(ObjectID id)
 {
-    if (getID()) }
+    if (ID() == id)
+    {
+        return this;
+    }
+
+    for (auto& child : children_)
+    {
+        if (AObject* result = child->find(id))
+        {
+            return result;
+        }
+    }
+
+    return nullptr;
+}
+
+const AObject* AObject::find(ObjectID id) const
+{
+    if (ID() == id)
+    {
+        return this;
+    }
+
+    for (const auto& child : children_)
+    {
+        if (const AObject* result = child->find(id))
+        {
+            return result;
+        }
+    }
+
+    return nullptr;
+}
 
 #endif
