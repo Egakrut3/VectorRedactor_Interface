@@ -72,27 +72,27 @@ ObjectID AObject::id() const
     return id_;
 }
 
-void AObject::setParent(AObject* new_parent)
+inline void AObject::setParent(AObject* new_parent)
 {
     parent_ = new_parent;
 }
 
-AObject* AObject::parent() const
+inline AObject* AObject::parent() const
 {
     return parent_;
 }
 
-const std::list<std::unique_ptr<AObject>>& AObject::children() const
+inline const std::list<std::unique_ptr<AObject>>& AObject::children() const
 {
     return children_;
 }
 
-std::list<std::unique_ptr<AObject>>& AObject::children()
+inline std::list<std::unique_ptr<AObject>>& AObject::children()
 {
     return children_;
 }
 
-void AObject::addChild(std::unique_ptr<AObject> child)
+inline void AObject::addChild(std::unique_ptr<AObject> child)
 {
     child->setParent(this);
     children_.push_back(std::move(child));
