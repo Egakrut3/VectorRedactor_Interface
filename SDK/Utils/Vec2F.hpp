@@ -49,7 +49,7 @@ private:
 
 /* ====================== Implementation ====================== */
 
-inline Vec2F::Vec2F() = default;
+inline Vec2F::Vec2F()  = default;
 inline Vec2F::~Vec2F() = default;
 
 inline Vec2F::Vec2F(float const x_value, float const y_value) : x_{x_value}, y_{y_value}
@@ -76,66 +76,77 @@ inline void Vec2F::setY(float const new_y)
     y_ = new_y;
 }
 
-inline Vec2F Vec2F::operator+() const {
+inline Vec2F Vec2F::operator+() const
+{
     return Vec2F{+x(), +y()};
 }
 
-inline Vec2F Vec2F::operator-() const {
+inline Vec2F Vec2F::operator-() const
+{
     return Vec2F{-x(), -y()};
 }
 
-inline Vec2F& Vec2F::operator+=(const Vec2F& vec) {
+inline Vec2F& Vec2F::operator+=(const Vec2F& vec)
+{
     setX(x() + vec.x());
     setY(y() + vec.y());
     return *this;
 }
 
-inline Vec2F& Vec2F::operator-=(const Vec2F& vec) {
+inline Vec2F& Vec2F::operator-=(const Vec2F& vec)
+{
     setX(x() - vec.x());
     setY(y() - vec.y());
     return *this;
 }
 
-inline Vec2F& Vec2F::operator*=(float const scalar) {
+inline Vec2F& Vec2F::operator*=(float const scalar)
+{
     setX(x() * scalar);
     setY(y() * scalar);
     return *this;
 }
 
-inline Vec2F& Vec2F::operator/=(float const scalar) {
+inline Vec2F& Vec2F::operator/=(float const scalar)
+{
     setX(x() / scalar);
     setY(y() / scalar);
     return *this;
 }
 
-inline Vec2F operator+(Vec2F const& lhs, Vec2F const& rhs) {
+inline Vec2F operator+(Vec2F const& lhs, Vec2F const& rhs)
+{
     Vec2F result{lhs};
     return result += rhs;
 }
 
-inline Vec2F operator-(Vec2F const& lhs, Vec2F const& rhs) {
+inline Vec2F operator-(Vec2F const& lhs, Vec2F const& rhs)
+{
     Vec2F result{lhs};
     return result -= rhs;
 }
 
-inline Vec2F operator*(Vec2F const& vec, float scalar) {
+inline Vec2F operator*(Vec2F const& vec, float scalar)
+{
     Vec2F result{vec};
     return result *= scalar;
 }
 
-inline Vec2F operator*(float scalar, Vec2F const& vec) {
+inline Vec2F operator*(float scalar, Vec2F const& vec)
+{
     Vec2F result{vec};
     return result *= scalar;
 }
 
-inline Vec2F operator/(Vec2F const& vec, float scalar) {
+inline Vec2F operator/(Vec2F const& vec, float scalar)
+{
     Vec2F result{vec};
     return result /= scalar;
 }
 
 inline float dotProduct(Vec2F const& lhs, Vec2F const& rhs)
 {
-    return lhs.x() * rhs.x() + lhs.y() * rhs.y();
+    return (lhs.x() * rhs.x()) + (lhs.y() * rhs.y());
 }
 
 inline float Vec2F::len2() const

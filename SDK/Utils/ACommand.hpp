@@ -14,7 +14,7 @@ protected:
 
 /* ======================== Implementation ======================== */
 
-inline ACommand::ACommand() = default;
+inline ACommand::ACommand()  = default;
 inline ACommand::~ACommand() = default;
 
 #endif

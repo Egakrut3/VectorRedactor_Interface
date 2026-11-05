@@ -17,7 +17,7 @@ public:
 
 public:
     static const char* strError(Error error);
-    static void log(LogLevel level, const char* fmt, ...);
+    static void        log(LogLevel level, const char* fmt, ...);
 
     static ApplicationCore& instance();
 
@@ -25,10 +25,10 @@ public:
     Error registerInterface(IID iid, void* interface);
     Error loadPackage(const std::string& path);
 
-    ApplicationRoot*        root();
-    ApplicationRoot const*  root() const;
-    Error                   queryInterface(IID iid, void** interface);
-    Error                   queryInterface(IID iid, void const** interface) const;
+    ApplicationRoot*       root();
+    ApplicationRoot const* root() const;
+    Error                  queryInterface(IID iid, void** interface);
+    Error                  queryInterface(IID iid, void const** interface) const;
 
     Error run();
     void  stop();
@@ -41,7 +41,7 @@ private:
     ApplicationCore(ApplicationCore&&);
 
     ApplicationCore& operator=(const ApplicationCore&) = delete;
-    ApplicationCore& operator=(ApplicationCore&&) = delete;
+    ApplicationCore& operator=(ApplicationCore&&)      = delete;
 
 private:
     std::unique_ptr<ApplicationRoot> root_{};

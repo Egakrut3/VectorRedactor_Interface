@@ -25,7 +25,7 @@ private:
 
 /* ======================== Implementation ======================== */
 
-inline AWidget::AWidget() = default;
+inline AWidget::AWidget()  = default;
 inline AWidget::~AWidget() = default;
 
 inline BoxF AWidget::box() const

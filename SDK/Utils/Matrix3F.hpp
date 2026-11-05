@@ -13,6 +13,7 @@
 class Matrix3F
 {
 public:
+    static constexpr std::size_t DIMENSION{3};
     using Storage = std::array<std::array<float, DIMENSION>, DIMENSION>;
 
 public:
@@ -28,7 +29,7 @@ public:
 
     explicit Matrix3F(const Storage& values);
 
-    std::array<float, DIMENSION>& operator[](std::size_t row);
+    std::array<float, DIMENSION>&       operator[](std::size_t row);
     const std::array<float, DIMENSION>& operator[](std::size_t row) const;
 
     Matrix3F operator+() const;
@@ -49,12 +50,11 @@ public:
 
     Matrix3F transposed() const;
 
-    float determinant() const;
+    float    determinant() const;
     Matrix3F inverted() const;
 
 private:
-    static constexpr std::size_t DIMENSION{3};
-    static constexpr float       DEFAULT_EPSILON{1e-7F};
+    static constexpr float DEFAULT_EPSILON{1e-7F};
 
 private:
     Storage values_{};
@@ -110,7 +110,8 @@ inline const std::array<float, Matrix3F::DIMENSION>& Matrix3F::operator[](std::s
     return values_[row];
 }
 
-inline Matrix3F Matrix3F::operator+() const {
+inline Matrix3F Matrix3F::operator+() const
+{
     Matrix3F result{Storage{}};
     for (std::size_t row = 0; row < DIMENSION; ++row)
     {
@@ -122,7 +123,8 @@ inline Matrix3F Matrix3F::operator+() const {
     return *this;
 }
 
-inline Matrix3F Matrix3F::operator-() const {
+inline Matrix3F Matrix3F::operator-() const
+{
     Matrix3F result{Storage{}};
     for (std::size_t row = 0; row < DIMENSION; ++row)
     {
@@ -134,7 +136,8 @@ inline Matrix3F Matrix3F::operator-() const {
     return *this;
 }
 
-inline Matrix3F& Matrix3F::operator+=(const Matrix3F& rhs) {
+inline Matrix3F& Matrix3F::operator+=(const Matrix3F& rhs)
+{
     for (std::size_t row = 0; row < DIMENSION; ++row)
     {
         for (std::size_t column = 0; column < DIMENSION; ++column)
@@ -145,7 +148,8 @@ inline Matrix3F& Matrix3F::operator+=(const Matrix3F& rhs) {
     return *this;
 }
 
-inline Matrix3F& Matrix3F::operator-=(const Matrix3F& rhs) {
+inline Matrix3F& Matrix3F::operator-=(const Matrix3F& rhs)
+{
     for (std::size_t row = 0; row < DIMENSION; ++row)
     {
         for (std::size_t column = 0; column < DIMENSION; ++column)
@@ -156,7 +160,8 @@ inline Matrix3F& Matrix3F::operator-=(const Matrix3F& rhs) {
     return *this;
 }
 
-inline Matrix3F& Matrix3F::operator*=(float const scalar) {
+inline Matrix3F& Matrix3F::operator*=(float const scalar)
+{
     for (std::size_t row = 0; row < DIMENSION; ++row)
     {
         for (std::size_t column = 0; column < DIMENSION; ++column)
@@ -167,35 +172,44 @@ inline Matrix3F& Matrix3F::operator*=(float const scalar) {
     return *this;
 }
 
-inline Matrix3F& Matrix3F::operator*=(const Matrix3F& rhs) {
+inline Matrix3F& Matrix3F::operator*=(const Matrix3F& rhs)
+{
     return *this = *this * rhs;
 }
 
-inline Matrix3F operator+(const Matrix3F& lhs, const Matrix3F& rhs) {
+inline Matrix3F operator+(const Matrix3F& lhs, const Matrix3F& rhs)
+{
     Matrix3F result{lhs};
     return result += rhs;
 }
 
-inline Matrix3F operator-(const Matrix3F& lhs, const Matrix3F& rhs) {
+inline Matrix3F operator-(const Matrix3F& lhs, const Matrix3F& rhs)
+{
     Matrix3F result{lhs};
     return result -= rhs;
 }
 
-inline Matrix3F operator*(float const scalar, const Matrix3F& matrix) {
+inline Matrix3F operator*(float const scalar, const Matrix3F& matrix)
+{
     Matrix3F result{matrix};
     return result *= scalar;
 }
 
-inline Matrix3F operator*(const Matrix3F& matrix, float const scalar) {
+inline Matrix3F operator*(const Matrix3F& matrix, float const scalar)
+{
     Matrix3F result{matrix};
     return result *= scalar;
 }
 
-inline Matrix3F operator*(const Matrix3F& lhs, const Matrix3F& rhs) {
+inline Matrix3F operator*(const Matrix3F& lhs, const Matrix3F& rhs)
+{
     Matrix3F result{Matrix3F::Storage{}};
-    for (std::size_t row = 0; row < Matrix3F::DIMENSION; ++row) {
-        for (std::size_t k = 0; k < Matrix3F::DIMENSION; ++k) {
-            for (std::size_t column = 0; column < Matrix3F::DIMENSION; ++column) {
+    for (std::size_t row = 0; row < Matrix3F::DIMENSION; ++row)
+    {
+        for (std::size_t k = 0; k < Matrix3F::DIMENSION; ++k)
+        {
+            for (std::size_t column = 0; column < Matrix3F::DIMENSION; ++column)
+            {
                 result[row][column] += lhs[row][k] * rhs[k][column];
             }
         }
@@ -220,7 +234,7 @@ inline Matrix3F Matrix3F::transposed() const
     {
         for (std::size_t column = 0; column < DIMENSION; ++column)
         {
-            result.values_[row][column] = values_[column][row];
+            result.values_[row][column] = (*this)[column][row];
         }
     }
     return result;
@@ -228,9 +242,9 @@ inline Matrix3F Matrix3F::transposed() const
 
 inline float Matrix3F::determinant() const
 {
-    return  ((*this)[0][0] * (((*this)[1][1] * (*this)[2][2]) - ((*this)[1][2] * (*this)[2][1]))) -
-            ((*this)[0][1] * (((*this)[1][0] * (*this)[2][2]) - ((*this)[1][2] * (*this)[2][0]))) +
-            ((*this)[0][2] * (((*this)[1][0] * (*this)[2][1]) - ((*this)[1][1] * (*this)[2][0])));
+    return ((*this)[0][0] * (((*this)[1][1] * (*this)[2][2]) - ((*this)[1][2] * (*this)[2][1]))) -
+           ((*this)[0][1] * (((*this)[1][0] * (*this)[2][2]) - ((*this)[1][2] * (*this)[2][0]))) +
+           ((*this)[0][2] * (((*this)[1][0] * (*this)[2][1]) - ((*this)[1][1] * (*this)[2][0])));
 }
 
 inline Matrix3F Matrix3F::inverted() const
@@ -242,7 +256,7 @@ inline Matrix3F Matrix3F::inverted() const
     }
 
     const float inv = 1.0F / det;
-    Storage inverse_values{};
+    Storage     inverse_values{};
 
     inverse_values[0][0] = (((*this)[1][1] * (*this)[2][2]) - ((*this)[1][2] * (*this)[2][1])) * inv;
     inverse_values[0][1] = (((*this)[0][2] * (*this)[2][1]) - ((*this)[0][1] * (*this)[2][2])) * inv;

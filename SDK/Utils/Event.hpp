@@ -83,7 +83,7 @@ inline Vec2F MouseEvent::cursorPos() const
 
 /* CloseEvent */
 
-inline CloseEvent::CloseEvent() = default;
+inline CloseEvent::CloseEvent()  = default;
 inline CloseEvent::~CloseEvent() = default;
 
 #endif

@@ -4,12 +4,13 @@
 #include "Utils/AObject.hpp"
 #include "Utils/Vec2F.hpp"
 
-class ApplicationRoot : public AObject {
+class ApplicationRoot : public AObject
+{
 public:
     ApplicationRoot();
     ~ApplicationRoot() override final;
 
-    bool processEvent(Event const &event) override final;
+    bool processEvent(Event const& event) override final;
     void render() const override final;
 
     Vec2F mapLocalToGlobal(const Vec2F& pos) const override final;
@@ -18,31 +19,38 @@ public:
 
 /* ======================== Implementation ======================== */
 
-inline ApplicationRoot::ApplicationRoot() = default;
+inline ApplicationRoot::ApplicationRoot()  = default;
 inline ApplicationRoot::~ApplicationRoot() = default;
 
-inline bool ApplicationRoot::processEvent(Event const &event) {
+inline bool ApplicationRoot::processEvent(Event const& event)
+{
     auto const end_iterator{children().rend()};
-    for (auto child_iterator{children().rbegin()}; child_iterator != end_iterator; ++child_iterator) {
-        if ((*child_iterator)->processEvent(event)) {
+    for (auto child_iterator{children().rbegin()}; child_iterator != end_iterator; ++child_iterator)
+    {
+        if ((*child_iterator)->processEvent(event))
+        {
             return true;
         }
     }
     return false;
 }
 
-inline void ApplicationRoot::render() const {
+inline void ApplicationRoot::render() const
+{
     auto const end_iterator{children().rend()};
-    for (auto child_iterator{children().rbegin()}; child_iterator != end_iterator; ++child_iterator) {
+    for (auto child_iterator{children().rbegin()}; child_iterator != end_iterator; ++child_iterator)
+    {
         (*child_iterator)->render();
     }
 }
 
-inline Vec2F ApplicationRoot::mapLocalToGlobal(const Vec2F& pos) const {
+inline Vec2F ApplicationRoot::mapLocalToGlobal(const Vec2F& pos) const
+{
     return pos;
 }
 
-inline Vec2F ApplicationRoot::mapGlobalToLocal(const Vec2F& pos) const {
+inline Vec2F ApplicationRoot::mapGlobalToLocal(const Vec2F& pos) const
+{
     return pos;
 }
 

@@ -2,11 +2,9 @@
 #define I_INPUT_PUMP_HPP
 
 #include "Interfaces/IID.hpp"
+#include "Utils/Event.hpp"
 
 #include <optional>
-
-// forward declaration
-class Event;
 
 constexpr static IID IID_INPUT_PUMP{1};
 
@@ -23,7 +21,7 @@ protected:
 
 /* ======================== Implementation ======================== */
 
-inline IInputPump::IInputPump() = default;
+inline IInputPump::IInputPump()  = default;
 inline IInputPump::~IInputPump() = default;
 
 #endif

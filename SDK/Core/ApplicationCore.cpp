@@ -162,7 +162,8 @@ ApplicationRoot* ApplicationCore::root()
     return root_.get();
 }
 
-ApplicationRoot const* ApplicationCore::root() const {
+ApplicationRoot const* ApplicationCore::root() const
+{
     return root_.get();
 }
 

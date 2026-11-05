@@ -19,13 +19,13 @@ public:
     virtual ~AObject() = 0;
 
     AObject& operator=(const AObject&) = delete;
-    AObject& operator=(AObject&&) = delete;
+    AObject& operator=(AObject&&)      = delete;
 
     ObjectID id() const;
 
-    AObject* parent();
+    AObject*       parent();
     AObject const* parent() const;
-    void     setParent(AObject* new_parent);
+    void           setParent(AObject* new_parent);
 
     std::list<std::unique_ptr<AObject>>&       children();
     const std::list<std::unique_ptr<AObject>>& children() const;
@@ -69,7 +69,7 @@ inline AObject::AObject() : id_{generateID()}
 {
 }
 
-inline AObject::~AObject() = default;
+inline AObject::~AObject()         = default;
 inline AObject::AObject(AObject&&) = default;
 
 inline ObjectID AObject::id() const
@@ -77,7 +77,8 @@ inline ObjectID AObject::id() const
     return id_;
 }
 
-inline AObject* AObject::parent() {
+inline AObject* AObject::parent()
+{
     return parent_;
 }
 
