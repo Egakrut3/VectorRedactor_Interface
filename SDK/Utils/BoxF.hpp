@@ -52,7 +52,7 @@ inline BoxF::~BoxF() = default;
 inline BoxF::BoxF(float const left_top_x, float const left_top_y, float const right_bottom_x,
                   float const right_bottom_y) :
     left_top_{
-        Vec2F{left_top_x, left_top_y}
+        Vec2F{left_top_x, left_top_y},
 },
     right_bottom_{Vec2F{right_bottom_x, right_bottom_y}}
 {
@@ -64,7 +64,7 @@ inline BoxF::BoxF(const Vec2F& left_top, const Vec2F& right_bottom) : left_top_{
 
 inline BoxF::BoxF(const Vec2F& size) :
     left_top_{
-        Vec2F{0.0F, 0.0F}
+        Vec2F{0.0F, 0.0F},
 },
     right_bottom_{size}
 {
