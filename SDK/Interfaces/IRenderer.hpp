@@ -6,7 +6,7 @@
 #include <cstdint>
 
 // forward declaration
-class Box2F;
+class BoxF;
 class Vec2F;
 
 struct Color
@@ -33,16 +33,16 @@ public:
     virtual ResourceID loadTexture(const char* path)  = 0;
     virtual FontID     loadFont(const char* filename) = 0;
 
-    virtual void renderRect(const Color& color, const Box2F& box, float angle)              = 0;
-    virtual void renderRectLines(const Color& color, const Box2F& box, float angle)         = 0;
-    virtual void renderTexture(const ResourceID& texture, const Box2F& box, float angle)    = 0;
-    virtual void renderCircle(const Color& color, const Box2F& box)                         = 0;
-    virtual void renderEllipse(const Color& color, const Box2F& box)                        = 0;
-    virtual void renderEllipseLines(const Color& color, const Box2F& box)                   = 0;
+    virtual void renderRect(const Color& color, const BoxF& box, float angle)              = 0;
+    virtual void renderRectLines(const Color& color, const BoxF& box, float angle)         = 0;
+    virtual void renderTexture(const ResourceID& texture, const BoxF& box, float angle)    = 0;
+    virtual void renderCircle(const Color& color, const BoxF& box)                         = 0;
+    virtual void renderEllipse(const Color& color, const BoxF& box)                        = 0;
+    virtual void renderEllipseLines(const Color& color, const BoxF& box)                   = 0;
     virtual void renderLine(const Vec2F& origin, const Vec2F& end, const Color& color)      = 0;
     virtual void renderVector(const Vec2F& origin, const Vec2F& vector, const Color& color) = 0;
     virtual void renderPixel(const Vec2F& pos, const Color& color)                          = 0;
-    virtual void renderText(const char* text, const Color& color, const Box2F& box, const FontID& font_id,
+    virtual void renderText(const char* text, const Color& color, const BoxF& box, const FontID& font_id,
                             int font_size)                                                  = 0;
 
     virtual void update() = 0;
