@@ -14,8 +14,8 @@ public:
     AShape();
     ~AShape() override = 0;
 
-    Vec2F mapLocalToGlobal(const Vec2F& pos) const override final;
-    Vec2F mapGlobalToLocal(const Vec2F& pos) const override final;
+    Vec2F mapLocalToGlobal(Vec2F const& pos) const override final;
+    Vec2F mapGlobalToLocal(Vec2F const& pos) const override final;
 
     virtual Color &color() = 0;
     virtual Color const &color() const = 0;
@@ -28,12 +28,12 @@ public:
 inline AShape::AShape()  = default;
 inline AShape::~AShape() = default;
 
-inline Vec2F AShape::mapLocalToGlobal(const Vec2F& pos) const
+inline Vec2F AShape::mapLocalToGlobal(Vec2F const& pos) const
 {
     return parent()->mapLocalToGlobal(transform().transformPoint(pos));
 }
 
-inline Vec2F AShape::mapGlobalToLocal(const Vec2F& pos) const
+inline Vec2F AShape::mapGlobalToLocal(Vec2F const& pos) const
 {
     return transform().inverted().transformPoint(parent()->mapGlobalToLocal(pos));
 }
