@@ -18,14 +18,21 @@ public:
 
 public:
     static Matrix3F identity();
-    static Matrix3F translation(float translation_x, float translation_y);
-    static Matrix3F scaling(float scale_x, float scale_y);
-    static Matrix3F rotation(float radians);
-    static Matrix3F shear(float x_by_y, float y_by_x);
+
+    static Matrix3F scaling(Vec2F const& factor);
+    static Matrix3F rotation(float angle);
+    static Matrix3F translation(Vec2F const& offset);
+    static Matrix3F shear(Vec2F const& shear_factor);
 
 public:
     Matrix3F();
     ~Matrix3F();
+
+    Matrix3F(Matrix3F const&);
+    Matrix3F(Matrix3F&&);
+
+    Matrix3F& operator=(Matrix3F const&);
+    Matrix3F& operator=(Matrix3F&&);
 
     explicit Matrix3F(const Storage& values);
 
@@ -38,7 +45,6 @@ public:
     Matrix3F& operator+=(const Matrix3F& rhs);
     Matrix3F& operator-=(const Matrix3F& rhs);
     Matrix3F& operator*=(float scalar);
-    Matrix3F& operator*=(const Matrix3F& rhs);
 
     friend Matrix3F operator+(const Matrix3F& lhs, const Matrix3F& rhs);
     friend Matrix3F operator-(const Matrix3F& lhs, const Matrix3F& rhs);
@@ -67,34 +73,35 @@ inline Matrix3F Matrix3F::identity()
     return Matrix3F{};
 }
 
-inline Matrix3F Matrix3F::translation(float const translation_x, float const translation_y)
+inline Matrix3F Matrix3F::scaling(Vec2F const& factor)
 {
-    return Matrix3F{Storage{{{1.0F, 0.0F, translation_x}, {0.0F, 1.0F, translation_y}, {0.0F, 0.0F, 1.0F}}}};
+    return Matrix3F{Storage{{{factor.x(), 0.0F, 0.0F}, {0.0F, factor.y(), 0.0F}, {0.0F, 0.0F, 1.0F}}}};
 }
 
-inline Matrix3F Matrix3F::scaling(float const scale_x, float const scale_y)
+inline Matrix3F Matrix3F::rotation(float const angle)
 {
-    return Matrix3F{Storage{{{scale_x, 0.0F, 0.0F}, {0.0F, scale_y, 0.0F}, {0.0F, 0.0F, 1.0F}}}};
-}
-
-inline Matrix3F Matrix3F::rotation(float const radians)
-{
-    const float cose = std::cos(radians);
-    const float sine = std::sin(radians);
+    const float cose = std::cos(angle);
+    const float sine = std::sin(angle);
 
     return Matrix3F{Storage{{{cose, -sine, 0.0F}, {sine, cose, 0.0F}, {0.0F, 0.0F, 1.0F}}}};
 }
 
-inline Matrix3F Matrix3F::shear(float const x_by_y, float const y_by_x)
+inline Matrix3F Matrix3F::translation(Vec2F const& offset)
 {
-    return Matrix3F{Storage{{{1.0F, x_by_y, 0.0F}, {y_by_x, 1.0F, 0.0F}, {0.0F, 0.0F, 1.0F}}}};
+    return Matrix3F{Storage{{{1.0F, 0.0F, offset.x()}, {0.0F, 1.0F, offset.y()}, {0.0F, 0.0F, 1.0F}}}};
 }
 
-inline Matrix3F::Matrix3F() : values_{Storage{{{1.0F, 0.0F, 0.0F}, {0.0F, 1.0F, 0.0F}, {0.0F, 0.0F, 1.0F}}}}
+inline Matrix3F Matrix3F::shear(Vec2F const& shear_factor)
 {
+    return Matrix3F{Storage{{{1.0F, shear_factor.x(), 0.0F}, {shear_factor.y(), 1.0F, 0.0F}, {0.0F, 0.0F, 1.0F}}}};
 }
 
-inline Matrix3F::~Matrix3F() = default;
+inline Matrix3F::Matrix3F()                           = default;
+inline Matrix3F::~Matrix3F()                          = default;
+inline Matrix3F::Matrix3F(Matrix3F const&)            = default;
+inline Matrix3F::Matrix3F(Matrix3F&&)                 = default;
+inline Matrix3F& Matrix3F::operator=(Matrix3F const&) = default;
+inline Matrix3F& Matrix3F::operator=(Matrix3F&&)      = default;
 
 inline Matrix3F::Matrix3F(const Storage& values) : values_{values}
 {
@@ -170,11 +177,6 @@ inline Matrix3F& Matrix3F::operator*=(float const scalar)
         }
     }
     return *this;
-}
-
-inline Matrix3F& Matrix3F::operator*=(const Matrix3F& rhs)
-{
-    return *this = *this * rhs;
 }
 
 inline Matrix3F operator+(const Matrix3F& lhs, const Matrix3F& rhs)

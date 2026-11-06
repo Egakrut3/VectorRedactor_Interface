@@ -32,6 +32,7 @@ public:
     friend Vec2F operator/(Vec2F const& vec, float scalar);
 
     friend float dotProduct(Vec2F const& lhs, Vec2F const& rhs);
+    friend Vec2F componentWiseProduct(Vec2F const& lhs, Vec2F const& rhs);
 
     float len() const;
     float len2() const;
@@ -147,6 +148,11 @@ inline Vec2F operator/(Vec2F const& vec, float scalar)
 inline float dotProduct(Vec2F const& lhs, Vec2F const& rhs)
 {
     return (lhs.x() * rhs.x()) + (lhs.y() * rhs.y());
+}
+
+inline Vec2F componentWiseProduct(Vec2F const& lhs, Vec2F const& rhs)
+{
+    return Vec2F{lhs.x() * rhs.x(), lhs.y() * rhs.y()};
 }
 
 inline float Vec2F::len2() const
