@@ -17,8 +17,8 @@ public:
     Vec2F mapLocalToGlobal(Vec2F const& pos) const override final;
     Vec2F mapGlobalToLocal(Vec2F const& pos) const override final;
 
-    virtual Color &color() = 0;
-    virtual Color const &color() const = 0;
+    virtual Color&       color()       = 0;
+    virtual Color const& color() const = 0;
 
     virtual BoxF axesAlignedBoundingBox() const = 0;
 };
