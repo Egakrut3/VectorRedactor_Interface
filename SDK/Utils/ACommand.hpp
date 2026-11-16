@@ -7,4 +7,3 @@ public:
 
     virtual void execute() const = 0;
 };
-

@@ -203,4 +203,3 @@ inline void Transformable::updateMatrix() const
 
     matrix_need_update_ = false;
 }
-

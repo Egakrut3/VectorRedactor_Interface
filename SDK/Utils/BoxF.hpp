@@ -236,4 +236,3 @@ inline void BoxF::setCenter(const Vec2F& point)
     left_top_           = point - oriented_size / 2;
     right_bottom_       = point + oriented_size / 2;
 }
-

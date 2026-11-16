@@ -108,4 +108,3 @@ inline Vec2F IDocument::TShape::mapGlobalToLocal(Vec2F const& pos) const
 
 inline IDocument::Visitor::Visitor()  = default;
 inline IDocument::Visitor::~Visitor() = default;
-

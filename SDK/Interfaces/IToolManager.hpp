@@ -57,4 +57,3 @@ enum class IToolManager::Error
 
     TOOL_NOT_FOUND,
 };
-

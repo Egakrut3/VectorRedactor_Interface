@@ -115,4 +115,3 @@ inline constexpr IRenderer::Color IRenderer::Color::GRAY{128U, 128U, 128U, 255U}
 inline constexpr IRenderer::Color IRenderer::Color::LIGHT_GRAY{211U, 211U, 211U, 255U};
 inline constexpr IRenderer::Color IRenderer::Color::DARK_GRAY{64U, 64U, 64U, 255U};
 inline constexpr IRenderer::Color IRenderer::Color::TRANSPARENT{0U, 0U, 0U, 0U};
-

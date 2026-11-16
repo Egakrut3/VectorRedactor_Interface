@@ -247,4 +247,3 @@ constexpr Matrix3F operator*(float scalar, const Matrix3F& matrix)
 {
     return matrix * scalar;
 }
-

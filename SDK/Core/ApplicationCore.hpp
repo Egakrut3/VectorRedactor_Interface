@@ -2,8 +2,8 @@
 
 #include "Interfaces/IID.hpp"
 #include "Interfaces/IInputPump.hpp"
-#include "Utils/TObject.hpp"
 #include "Utils/ACommand.hpp"
+#include "Utils/TObject.hpp"
 
 #include <memory>
 #include <queue>
@@ -21,11 +21,11 @@ private:
     ApplicationCore();
     ~ApplicationCore();
 
-    std::unordered_map<IID, void*> registry_;
-    std::unique_ptr<Root>          root_;
-    std::vector<void*>             package_handles_;
+    std::unordered_map<IID, void*>        registry_;
+    std::unique_ptr<Root>                 root_;
+    std::vector<void*>                    package_handles_;
     std::queue<std::unique_ptr<ACommand>> commands_;
-    bool                           is_running_ = false;
+    bool                                  is_running_ = false;
 
 public:
     ApplicationCore(const ApplicationCore&)            = delete;
@@ -37,7 +37,7 @@ public:
     static ApplicationCore& instance();
     TObject*                root() const;
     Error                   queryInterface(IID iid, void** interface) const;
-    void pushCommand(std::unique_ptr<ACommand> command);
+    void                    pushCommand(std::unique_ptr<ACommand> command);
 
     Error run();
     void  stop();
@@ -84,4 +84,3 @@ public:
     void pushModal(std::unique_ptr<TObject> new_modal);
     bool popModal();
 }; // class Root
-

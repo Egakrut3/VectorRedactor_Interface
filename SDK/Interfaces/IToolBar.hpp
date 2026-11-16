@@ -14,7 +14,6 @@ public:
     IToolBar& operator=(const IToolBar&) = delete;
     IToolBar& operator=(IToolBar&&)      = delete;
 
-    virtual void addTool(IToolManager::ATool::ID tool_id, IRenderer::TextureID texture_id)  = 0;
-    virtual void removeTool(IToolManager::ATool::ID tool_id) = 0;
-}; // IToolBar    
-
+    virtual void addTool(IToolManager::ATool::ID tool_id, IRenderer::TextureID texture_id) = 0;
+    virtual void removeTool(IToolManager::ATool::ID tool_id)                               = 0;
+}; // IToolBar

@@ -142,4 +142,3 @@ inline const TObject* TObject::find(ID object_id) const
 
     return nullptr;
 }
-

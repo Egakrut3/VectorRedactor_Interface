@@ -169,4 +169,3 @@ inline void Vec2F::print() const
 {
     std::cerr << "{ " << x_ << ", " << y_ << " }";
 }
-
