@@ -155,6 +155,11 @@ ApplicationCore::Error ApplicationCore::queryInterface(IID iid, void** interface
     return Error::INTERFACE_NOT_FOUND;
 }
 
+void ApplicationCore::pushCommand(std::unique_ptr<ACommand> command)
+{
+	commands_.push(std::move(command));
+}
+
 ApplicationCore::Error ApplicationCore::run()
 {
     /* already running => return */
@@ -183,6 +188,12 @@ ApplicationCore::Error ApplicationCore::run()
         {
             root_->processEvent(polled.value());
         }
+
+	while(!commands_.empty())
+	{
+		commands_.back()->execute();
+		commands_.pop();
+	}
 
         root_->render();
         renderer->update();

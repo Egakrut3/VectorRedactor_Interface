@@ -1,5 +1,4 @@
-#ifndef A_COMMAND_HPP
-#define A_COMMAND_HPP
+#pragma once
 
 class ACommand
 {
@@ -9,4 +8,3 @@ public:
     virtual void execute() const = 0;
 };
 
-#endif

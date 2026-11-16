@@ -1,11 +1,12 @@
-#ifndef APPLICATION_CORE_HPP
-#define APPLICATION_CORE_HPP
+#pragma once
 
 #include "Interfaces/IID.hpp"
 #include "Interfaces/IInputPump.hpp"
 #include "Utils/TObject.hpp"
+#include "Utils/ACommand.hpp"
 
 #include <memory>
+#include <queue>
 #include <unordered_map>
 #include <vector>
 
@@ -15,7 +16,6 @@ public:
     enum class Error;
     enum class LogLevel;
     class Root;
-    class Desktop;
 
 private:
     ApplicationCore();
@@ -24,6 +24,7 @@ private:
     std::unordered_map<IID, void*> registry_;
     std::unique_ptr<Root>          root_;
     std::vector<void*>             package_handles_;
+    std::queue<std::unique_ptr<ACommand>> commands_;
     bool                           is_running_ = false;
 
 public:
@@ -36,6 +37,7 @@ public:
     static ApplicationCore& instance();
     TObject*                root() const;
     Error                   queryInterface(IID iid, void** interface) const;
+    void pushCommand(std::unique_ptr<ACommand> command);
 
     Error run();
     void  stop();
@@ -83,4 +85,3 @@ public:
     bool popModal();
 }; // class Root
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef I_RENDERER_HPP
-#define I_RENDERER_HPP
+#pragma once
 
 #include "Interfaces/IID.hpp"
 #include "Utils/BoxF.hpp"
@@ -117,4 +116,3 @@ inline constexpr IRenderer::Color IRenderer::Color::LIGHT_GRAY{211U, 211U, 211U,
 inline constexpr IRenderer::Color IRenderer::Color::DARK_GRAY{64U, 64U, 64U, 255U};
 inline constexpr IRenderer::Color IRenderer::Color::TRANSPARENT{0U, 0U, 0U, 0U};
 
-#endif

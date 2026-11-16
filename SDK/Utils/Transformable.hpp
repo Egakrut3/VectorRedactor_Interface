@@ -1,5 +1,4 @@
-#ifndef TRANSFORMABLE_HPP
-#define TRANSFORMABLE_HPP
+#pragma once
 
 #include "Utils/Matrix3F.hpp"
 #include "Utils/Vec2F.hpp"
@@ -205,4 +204,3 @@ inline void Transformable::updateMatrix() const
     matrix_need_update_ = false;
 }
 
-#endif
