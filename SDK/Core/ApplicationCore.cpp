@@ -196,12 +196,12 @@ ApplicationCore::Error ApplicationCore::run()
         while (auto polled = input_pump->pollEvent())
         {
             root_->processEvent(*polled);
-        }
 
-        while (!commands_.empty())
-        {
-            commands_.back()->execute();
-            commands_.pop();
+            while (!commands_.empty())
+            {
+                commands_.back()->execute();
+                commands_.pop();
+            }
         }
 
         root_->render();
