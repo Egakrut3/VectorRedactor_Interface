@@ -8,12 +8,15 @@
 #include "Utils/Vec2F.hpp"
 
 #include <cassert>
+#include <chrono>
 #include <cstdarg>
+#include <cstddef>
 #include <cstdio>
 #include <dlfcn.h>
 #include <memory>
 #include <optional>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
 
@@ -160,9 +163,13 @@ void ApplicationCore::pushCommand(std::unique_ptr<ACommand> command)
     commands_.push(std::move(command));
 }
 
+void ApplicationCore::setFPS(FPS fps)
+{
+	microseconds_per_frame_ = std::chrono::microseconds(static_cast<size_t>(1e6/fps));
+}
+
 ApplicationCore::Error ApplicationCore::run()
 {
-    /* already running => return */
     if (is_running_)
     {
         return Error::APPLICATION_ALREADY_RUNNING;
@@ -180,23 +187,33 @@ ApplicationCore::Error ApplicationCore::run()
         return Error::NOT_LOADED_INPUT_PUMP;
     }
 
+
+    auto next_time = std::chrono::steady_clock::now();
+
     is_running_ = true;
     while (is_running_)
     {
-        auto polled = input_pump->pollEvent();
-        if (polled.has_value())
+        while (auto polled = input_pump->pollEvent())
         {
-            root_->processEvent(polled.value());
+            root_->processEvent(*polled);
         }
 
-        while (!commands_.empty())
-        {
-            commands_.back()->execute();
-            commands_.pop();
-        }
+	while(!commands_.empty())
+	{
+		commands_.back()->execute();
+		commands_.pop();
+	}
 
         root_->render();
         renderer->update();
+
+        next_time += microseconds_per_frame_;
+        auto now = std::chrono::steady_clock::now();
+        if (next_time < now)
+        {
+            next_time = now;
+        }
+        std::this_thread::sleep_until(next_time);
     }
 
     return Error::SUCCESS;
