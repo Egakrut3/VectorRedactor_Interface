@@ -165,7 +165,7 @@ void ApplicationCore::pushCommand(std::unique_ptr<ACommand> command)
 
 void ApplicationCore::setFPS(FPS fps)
 {
-	microseconds_per_frame_ = std::chrono::microseconds(static_cast<size_t>(1e6/fps));
+    microseconds_per_frame_ = std::chrono::microseconds(static_cast<size_t>(1e6 / fps));
 }
 
 ApplicationCore::Error ApplicationCore::run()
@@ -198,11 +198,11 @@ ApplicationCore::Error ApplicationCore::run()
             root_->processEvent(*polled);
         }
 
-	while(!commands_.empty())
-	{
-		commands_.back()->execute();
-		commands_.pop();
-	}
+        while (!commands_.empty())
+        {
+            commands_.back()->execute();
+            commands_.pop();
+        }
 
         root_->render();
         renderer->update();

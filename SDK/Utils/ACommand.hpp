@@ -20,4 +20,3 @@ std::unique_ptr<Command> ACommand::clone(const Command& command)
 {
     return std::make_unique<Command>(command);
 }
-

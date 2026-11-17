@@ -32,8 +32,8 @@ private:
     bool                                  is_running_ = false;
 
     /* default fps ~= 60 */
-    static constexpr std::chrono::microseconds MICROSECONDS_PER_FRAME_DEFAULT = std::chrono::microseconds(16667);
-    std::chrono::microseconds microseconds_per_frame_ = MICROSECONDS_PER_FRAME_DEFAULT;
+    static constexpr std::chrono::microseconds MICROSECONDS_PER_FRAME_DEFAULT = std::chrono::microseconds(16'667);
+    std::chrono::microseconds                  microseconds_per_frame_        = MICROSECONDS_PER_FRAME_DEFAULT;
 
 public:
     ApplicationCore(const ApplicationCore&)            = delete;
@@ -47,7 +47,7 @@ public:
     Error                   queryInterface(IID iid, void** interface) const;
     void                    pushCommand(std::unique_ptr<ACommand> command);
 
-    void setFPS(FPS fps);
+    void  setFPS(FPS fps);
     Error run();
     void  stop();
 
