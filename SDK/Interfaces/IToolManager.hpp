@@ -1,12 +1,12 @@
-#ifndef I_TOOL_MANAGER_HPP
-#define I_TOOL_MANAGER_HPP
+#pragma once
 
 #include "Interfaces/IID.hpp"
 #include "Interfaces/IInputPump.hpp"
+
+#include <cstdint>
 #include <memory>
 
 constexpr static const IID IID_TOOL_MANAGER = 3;
-
 
 class IToolManager
 {
@@ -23,31 +23,31 @@ public:
 
     enum class Error;
 
-    class ATool
-    {
-    public:
-        using ID         = uint64_t;
-        ATool()          = default;
-        virtual ~ATool() = default;
-
-        ATool(const ATool&)            = delete;
-        ATool(ATool&&)                 = delete;
-        ATool& operator=(const ATool&) = delete;
-        ATool& operator=(ATool&&)      = delete;
-
-        virtual ID   id() const                                   = 0;
-        virtual bool processEvent(const IInputPump::Event& event) = 0;
-        /**
-         * Если инструменту понадобится отрисовыватся - он
-         * должен будет добавляться в дерево
-         */
-    };
-
-    virtual Error addTool(std::unique_ptr<ATool> tool)             = 0;
-    virtual Error removeTool(ATool::ID tool_id)   = 0;
-    virtual Error setActiveTool(ATool::ID tool_id) = 0;
+    virtual Error addTool(std::unique_ptr<ATool> tool) = 0;
+    virtual Error removeTool(uint64_t tool_id)         = 0;
+    virtual Error setActiveTool(uint64_t tool_id)      = 0;
 
     virtual bool processEvent(const IInputPump::Event& event) = 0;
+};
+
+class IToolManager::ATool
+{
+public:
+    using ID         = uint64_t;
+    ATool()          = default;
+    virtual ~ATool() = default;
+
+    ATool(const ATool&)            = delete;
+    ATool(ATool&&)                 = delete;
+    ATool& operator=(const ATool&) = delete;
+    ATool& operator=(ATool&&)      = delete;
+
+    virtual ID   id() const                                   = 0;
+    virtual bool processEvent(const IInputPump::Event& event) = 0;
+    /**
+     * Если инструменту понадобится отрисовыватся - он
+     * должен будет добавляться в дерево
+     */
 };
 
 enum class IToolManager::Error
@@ -57,5 +57,3 @@ enum class IToolManager::Error
 
     TOOL_NOT_FOUND,
 };
-
-#endif // I_TOOL_MANAGER_HPP
